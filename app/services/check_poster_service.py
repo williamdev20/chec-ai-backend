@@ -19,6 +19,11 @@ def check_poster(img):
         if isinstance(cosine_similarity_result, dict):
             agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"])
 
+            if agent_result == "TRUE":
+                agent_result = True
+            else:
+                agent_result = False
+
             return agent_result
         else:
             return cosine_similarity_result
