@@ -17,7 +17,7 @@ def check_poster(img):
         cosine_similarity_result = check_poster_with_cosine_similarity(claim_embedding, paragraph_embedding, paragraphs)
 
         if isinstance(cosine_similarity_result, dict):
-            agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"])
+            agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"]).strip().upper() #type: ignore
 
             if agent_result == "TRUE":
                 agent_result = True

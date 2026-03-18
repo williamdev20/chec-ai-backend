@@ -1,8 +1,14 @@
 from app.config.dependencies import ocr, spell
 import pytesseract
+from PIL import Image
+import numpy as np
 
-def paddleOCR_analyze(img):
-    result = ocr.ocr(img)
+def paddleOCR_analyze(img_stream):
+    img_stream.seek(0)
+    img = Image.open(img_stream)
+    img_np = np.array(img)
+
+    result = ocr.ocr(img_np)
     extracted_text = " ".join([word[1][0] for line in result for word in line]).lower()
 
     words = extracted_text.split()
@@ -13,7 +19,10 @@ def paddleOCR_analyze(img):
     return paddleOCR_claim
 
 
-def tesseract_analyze(img):
+def tesseract_analyze(img_stream):
+    img_stream.seek(0)
+    img = Image.open(img_stream)
+
     extracted_text = pytesseract.image_to_string(img).lower()
     words = extracted_text.split()
     words_unknow = spell.unknown(words)
@@ -30,9 +39,9 @@ def check_claim_with_more_correct_words(text):
     return len(unknow_word)
 
 
-def getFinalClaim(img):
-    paddle_claim = paddleOCR_analyze(img) # Ajeitar aqui
-    tesseract_claim = tesseract_analyze(img) # Ajeitar aqui
+def getFinalClaim(img_stream):
+    paddle_claim = paddleOCR_analyze(img_stream)
+    tesseract_claim = tesseract_analyze(img_stream)
     final_claim = ""
 
     if check_claim_with_more_correct_words(paddle_claim) < check_claim_with_more_correct_words(tesseract_claim):
