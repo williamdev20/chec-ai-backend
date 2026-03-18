@@ -1,5 +1,11 @@
 from app.config.dependencies import model
 
+def get_final_claim_embedding(text):
+    sentence = text
+    embedding = model.encode(sentence)
+
+    return embedding
+
 def get_scrapping_paragraphs_embedding(paragraphs: list[str]):
     sentences = []
     for paragraph in paragraphs:
