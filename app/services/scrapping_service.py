@@ -21,10 +21,10 @@ def search_on_web(query):
     }
 
     response = requests.request("POST", url, headers=headers, json=payload)
-    
+
     if response.status_code != 200:
         print("[ERROR]: Houve erro na requisição da API: ", response.status_code)
-
+        return []
 
     data = response.json()
 
@@ -32,25 +32,32 @@ def search_on_web(query):
     source_links = []
     scrapping_paragraphs = []
 
-    if data["organic"]:
-        for result in data["organic"]:
-            #print(result["link"])
-            source_links.append(result["link"])
+    organic_results = data.get("organic", [])
+    if organic_results:
+        for result in organic_results:
+            link = result.get("link")
+            if link:
+                source_links.append(link)
+
+    if not source_links:
+        print("[WARN]: Nenhum link encontrado nos resultados da busca.")
+        return []
 
     # Scrapping #
     for url in source_links:
         try:
             html = requests.get(url, headers=headers_scrapping, timeout=10, verify=False)
-            soup = BeautifulSoup(html.text, "html.parser")
 
             if html.status_code != 200:
-                #print(f"[ERROR] Houve um erro ao acessar o site de scrapping: {html.status_code}\n URL negada: {url}")
                 continue
 
+            soup = BeautifulSoup(html.text, "html.parser")
             paragraphs = soup.find_all("p")
-            
+
             for paragraph in paragraphs:
-                scrapping_paragraphs.append(paragraph.get_text(strip=True))
+                text = paragraph.get_text(strip=True)
+                if text:
+                    scrapping_paragraphs.append(text)
 
         except Exception as e:
             print(f"[ERROR]: Houve um erro no scrapping: {e}")

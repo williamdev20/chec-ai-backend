@@ -12,19 +12,18 @@ def check_poster(img):
     if google_check_result is None:
         claim_embedding = get_final_claim_embedding(claim)
         paragraphs = search_on_web(claim)
+
+        if not paragraphs:
+            agent_result = check_with_agent(claim, "Nenhum parágrafo encontrado.").strip().upper()
+            return agent_result == "TRUE"
+
         paragraph_embedding = get_scrapping_paragraphs_embedding(paragraphs)
 
         cosine_similarity_result = check_poster_with_cosine_similarity(claim_embedding, paragraph_embedding, paragraphs)
 
         if isinstance(cosine_similarity_result, dict):
-            agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"]).strip().upper() #type: ignore
-
-            if agent_result == "TRUE":
-                agent_result = True
-            else:
-                agent_result = False
-
-            return agent_result
+            agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"]).strip().upper()
+            return agent_result == "TRUE"
         else:
             return cosine_similarity_result
     else:
