@@ -1,58 +1,42 @@
 import os
 import requests
 from bs4 import BeautifulSoup
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def scrape_url(url):
+    headers_scrapping = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
+    }
+    try:
+        html = requests.get(url, headers=headers_scrapping, timeout=5, verify=False)  # timeout 5 ao invés de 10
+        if html.status_code != 200:
+            return []
+        soup = BeautifulSoup(html.text, "html.parser")
+        return [p.get_text(strip=True) for p in soup.find_all("p")]
+    except Exception as e:
+        print(f"[ERROR]: Houve um erro no scrapping: {e}")
+        return []
 
 def search_on_web(query):
     url = "https://google.serper.dev/search"
-
-    payload = {
-        "q": query,
-        "hl": "pt",
-        "num": 10
-    }
-
+    payload = {"q": query, "hl": "pt", "num": 5}
     headers = {
         "X-API-KEY": os.getenv("SERPER_API_KEY"),
         "Content-Type": "application/json"
     }
 
-    headers_scrapping = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-    }
-
-    response = requests.request("POST", url, headers=headers, json=payload)
-    
+    response = requests.post(url, headers=headers, json=payload)
     if response.status_code != 200:
         print("[ERROR]: Houve erro na requisição da API: ", response.status_code)
-
+        return []
 
     data = response.json()
+    source_links = [result["link"] for result in data.get("organic", [])]
 
-    # Pegar os links #
-    source_links = []
     scrapping_paragraphs = []
-
-    if data["organic"]:
-        for result in data["organic"]:
-            #print(result["link"])
-            source_links.append(result["link"])
-
-    # Scrapping #
-    for url in source_links:
-        try:
-            html = requests.get(url, headers=headers_scrapping, timeout=10, verify=False)
-            soup = BeautifulSoup(html.text, "html.parser")
-
-            if html.status_code != 200:
-                #print(f"[ERROR] Houve um erro ao acessar o site de scrapping: {html.status_code}\n URL negada: {url}")
-                continue
-
-            paragraphs = soup.find_all("p")
-            
-            for paragraph in paragraphs:
-                scrapping_paragraphs.append(paragraph.get_text(strip=True))
-
-        except Exception as e:
-            print(f"[ERROR]: Houve um erro no scrapping: {e}")
+    with ThreadPoolExecutor(max_workers=10) as pool:
+        futures = {pool.submit(scrape_url, url): url for url in source_links}
+        for future in as_completed(futures):
+            scrapping_paragraphs.extend(future.result())
 
     return scrapping_paragraphs
