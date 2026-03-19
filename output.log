@@ -1,0 +1,105 @@
+nohup: ignoring input
+Downloading cpython-3.10.20-linux-x86_64-gnu (download) (28.5MiB)
+ Downloaded cpython-3.10.20-linux-x86_64-gnu (download)
+Using CPython 3.10.20
+Creating virtual environment at: .venv
+Downloading pygments (1.2MiB)
+Downloading torch (873.1MiB)
+Downloading babel (9.7MiB)
+Downloading hf-xet (4.0MiB)
+Downloading sympy (6.0MiB)
+Downloading lxml (5.0MiB)
+Downloading pandas (12.2MiB)
+Downloading nvidia-nccl-cu12 (307.4MiB)
+Downloading pycryptodome (2.2MiB)
+Downloading nvidia-nvjitlink-cu12 (37.4MiB)
+Downloading nvidia-curand-cu12 (60.7MiB)
+Downloading nvidia-cufile-cu12 (1.1MiB)
+Downloading nvidia-cublas-cu12 (566.8MiB)
+Downloading scipy (35.9MiB)
+Downloading scikit-image (14.1MiB)
+Downloading visualdl (6.0MiB)
+Downloading numpy (16.5MiB)
+Downloading nvidia-cusparselt-cu12 (273.9MiB)
+Downloading pydantic-core (2.0MiB)
+Downloading nvidia-cuda-cupti-cu12 (9.8MiB)
+Downloading scikit-learn (9.2MiB)
+Downloading pymupdf (23.8MiB)
+Downloading opencv-python-headless (46.8MiB)
+Downloading opencv-python (58.1MiB)
+Downloading kiwisolver (1.6MiB)
+Downloading tokenizers (3.1MiB)
+Downloading nvidia-cufft-cu12 (184.2MiB)
+Downloading fonttools (4.7MiB)
+Downloading opencv-contrib-python (64.0MiB)
+Downloading triton (179.4MiB)
+Downloading nvidia-cusolver-cu12 (255.1MiB)
+Downloading nvidia-cusparse-cu12 (274.9MiB)
+Downloading nvidia-nvshmem-cu12 (132.7MiB)
+Downloading paddlepaddle (120.1MiB)
+Downloading nvidia-cudnn-cu12 (674.0MiB)
+Downloading cython (3.4MiB)
+Downloading networkx (1.6MiB)
+Downloading cuda-bindings (11.6MiB)
+Downloading nvidia-cuda-nvrtc-cu12 (84.0MiB)
+Downloading pyspellchecker (6.9MiB)
+Downloading rapidfuzz (3.0MiB)
+Downloading pillow (6.7MiB)
+Downloading shapely (2.9MiB)
+Downloading matplotlib (8.3MiB)
+Downloading uvloop (3.5MiB)
+Downloading transformers (10.2MiB)
+ Downloaded nvidia-cufile-cu12
+ Downloaded pygments
+ Downloaded kiwisolver
+ Downloaded networkx
+ Downloaded pydantic-core
+ Downloaded pycryptodome
+ Downloaded shapely
+ Downloaded rapidfuzz
+ Downloaded tokenizers
+ Downloaded cython
+ Downloaded uvloop
+ Downloaded hf-xet
+ Downloaded fonttools
+ Downloaded lxml
+ Downloaded visualdl
+ Downloaded sympy
+ Downloaded pillow
+ Downloaded pyspellchecker
+ Downloaded matplotlib
+ Downloaded scikit-learn
+ Downloaded babel
+ Downloaded nvidia-cuda-cupti-cu12
+ Downloaded transformers
+ Downloaded cuda-bindings
+ Downloaded pandas
+ Downloaded scikit-image
+ Downloaded numpy
+ Downloaded pymupdf
+ Downloaded scipy
+ Downloaded nvidia-nvjitlink-cu12
+ Downloaded opencv-python-headless
+ Downloaded opencv-python
+ Downloaded nvidia-curand-cu12
+ Downloaded opencv-contrib-python
+ Downloaded nvidia-cuda-nvrtc-cu12
+ Downloaded paddlepaddle
+ Downloaded nvidia-nvshmem-cu12
+ Downloaded triton
+ Downloaded nvidia-cufft-cu12
+ Downloaded nvidia-cusolver-cu12
+ Downloaded nvidia-cusparselt-cu12
+ Downloaded nvidia-cusparse-cu12
+ Downloaded nvidia-nccl-cu12
+ Downloaded nvidia-cublas-cu12
+ Downloaded nvidia-cudnn-cu12
+ Downloaded torch
+Installed 150 packages in 1.03s
+INFO:     Started server process [5747]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
+INFO:     127.0.0.1:33182 - "GET / HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:44056 - "GET /check HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:52110 - "GET /check HTTP/1.1" 405 Method Not Allowed

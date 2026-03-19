@@ -1,33 +1,59 @@
-from app.config.dependencies import get_ocr
+from app.config.dependencies import get_ocr, get_spell
 import pytesseract
 from PIL import Image
 import numpy as np
-from concurrent.futures import ThreadPoolExecutor
 
-def paddleOCR_analyze(img_np):
+def paddleOCR_analyze(img_stream):
     ocr = get_ocr()
-    result = ocr.ocr(img_np)
-    return " ".join([word[1][0] for line in result for word in line]).lower()
-
-def tesseract_analyze(img):
-    return pytesseract.image_to_string(img).lower().strip()
-
-def check_claim_with_more_correct_words(text):
-    from app.config.dependencies import get_spell
     spell = get_spell()
-    return len(spell.unknown(text.split()))
 
-def getFinalClaim(img_stream):
     img_stream.seek(0)
     img = Image.open(img_stream)
     img_np = np.array(img)
 
-    with ThreadPoolExecutor(max_workers=2) as pool:
-        future_paddle = pool.submit(paddleOCR_analyze, img_np)
-        future_tesseract = pool.submit(tesseract_analyze, img)
-        paddle_claim = future_paddle.result()
-        tesseract_claim = future_tesseract.result()
+    result = ocr.ocr(img_np)
+    extracted_text = " ".join([word[1][0] for line in result for word in line]).lower()
+
+    words = extracted_text.split()
+    words_unknow = spell.unknown(words)
+    corrected_words = [spell.correction(word) or word if word in words_unknow else word for word in words]
+    paddleOCR_claim = " ".join(corrected_words)
+    
+    return paddleOCR_claim
+
+
+def tesseract_analyze(img_stream):
+    spell = get_spell()
+
+    img_stream.seek(0)
+    img = Image.open(img_stream)
+
+    extracted_text = pytesseract.image_to_string(img).lower()
+    words = extracted_text.split()
+    words_unknow = spell.unknown(words)
+    corrected_words = [spell.correction(word) or word if word in words_unknow else word for word in words]
+    tesseract_text = " ".join(corrected_words)
+
+    return tesseract_text
+
+
+def check_claim_with_more_correct_words(text):
+    spell = get_spell()
+
+    words = text.split()
+    unknow_word = spell.unknown(words)
+
+    return len(unknow_word)
+
+
+def getFinalClaim(img_stream):
+    paddle_claim = paddleOCR_analyze(img_stream)
+    tesseract_claim = tesseract_analyze(img_stream)
+    final_claim = ""
 
     if check_claim_with_more_correct_words(paddle_claim) < check_claim_with_more_correct_words(tesseract_claim):
-        return paddle_claim
-    return tesseract_claim
+        final_claim = paddle_claim
+    else:
+        final_claim = tesseract_claim
+
+    return final_claim

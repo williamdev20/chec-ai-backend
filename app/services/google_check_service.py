@@ -46,3 +46,4 @@ def google_fact_checking_claim(query):
     else:
 
         return None
+    
