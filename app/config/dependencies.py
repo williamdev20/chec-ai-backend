@@ -1,13 +1,24 @@
-from paddleocr import PaddleOCR
-from spellchecker import SpellChecker
-from sentence_transformers import SentenceTransformer
-from groq import Groq
-import os
-from dotenv import load_dotenv
+from functools import lru_cache
 
-load_dotenv()
+@lru_cache(maxsize=1)
+def get_ocr():
+    from paddleocr import PaddleOCR
+    return PaddleOCR(use_angle_cls=True, lang="pt", show_log=False)
 
-ocr = PaddleOCR(use_angle_cls=True, lang="pt", show_log=False)
-spell = SpellChecker(language="pt")
-model = SentenceTransformer("all-MiniLM-L6-v2")
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+@lru_cache(maxsize=1)
+def get_spell():
+    from spellchecker import SpellChecker
+    return SpellChecker(language="pt")
+
+@lru_cache(maxsize=1)
+def get_model():
+    from sentence_transformers import SentenceTransformer
+    return SentenceTransformer("all-MiniLM-L6-v2")
+
+@lru_cache(maxsize=1)
+def get_client():
+    from groq import Groq
+    import os
+    from dotenv import load_dotenv
+    load_dotenv()
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))

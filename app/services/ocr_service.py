@@ -1,9 +1,12 @@
-from app.config.dependencies import ocr, spell
+from app.config.dependencies import get_ocr, get_spell
 import pytesseract
 from PIL import Image
 import numpy as np
 
 def paddleOCR_analyze(img_stream):
+    ocr = get_ocr()
+    spell = get_spell()
+
     img_stream.seek(0)
     img = Image.open(img_stream)
     img_np = np.array(img)
@@ -20,6 +23,8 @@ def paddleOCR_analyze(img_stream):
 
 
 def tesseract_analyze(img_stream):
+    spell = get_spell()
+
     img_stream.seek(0)
     img = Image.open(img_stream)
 
@@ -33,6 +38,8 @@ def tesseract_analyze(img_stream):
 
 
 def check_claim_with_more_correct_words(text):
+    spell = get_spell()
+
     words = text.split()
     unknow_word = spell.unknown(words)
 

@@ -1,6 +1,8 @@
-from app.config.dependencies import client
+from app.config.dependencies import get_client
 
 def check_with_agent(query, top_paragraph):
+    client = get_client()
+
     completion = client.chat.completions.create(
         model="openai/gpt-oss-120b",
         messages=[
