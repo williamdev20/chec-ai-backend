@@ -1,4 +1,4 @@
-from app.config.dependencies import get_ocr, get_spell
+from app.config.dependencies import get_ocr
 import pytesseract
 from PIL import Image
 import numpy as np
@@ -6,23 +6,14 @@ from concurrent.futures import ThreadPoolExecutor
 
 def paddleOCR_analyze(img_np):
     ocr = get_ocr()
-    spell = get_spell()
     result = ocr.ocr(img_np)
-    extracted_text = " ".join([word[1][0] for line in result for word in line]).lower()
-    words = extracted_text.split()
-    words_unknow = spell.unknown(words)
-    corrected_words = [spell.correction(word) or word if word in words_unknow else word for word in words]
-    return " ".join(corrected_words)
+    return " ".join([word[1][0] for line in result for word in line]).lower()
 
 def tesseract_analyze(img):
-    spell = get_spell()
-    extracted_text = pytesseract.image_to_string(img).lower()
-    words = extracted_text.split()
-    words_unknow = spell.unknown(words)
-    corrected_words = [spell.correction(word) or word if word in words_unknow else word for word in words]
-    return " ".join(corrected_words)
+    return pytesseract.image_to_string(img).lower().strip()
 
 def check_claim_with_more_correct_words(text):
+    from app.config.dependencies import get_spell
     spell = get_spell()
     return len(spell.unknown(text.split()))
 

@@ -21,8 +21,10 @@ def get_scrapping_paragraphs_embedding(paragraphs: list[str]):
 
 
 def check_poster_with_cosine_similarity(query_embedding, paragraphs_embedding, paragraphs: list[str]):
-    model = get_model()
+    if not paragraphs:
+        return {"paragraph": ""}
 
+    model = get_model()
     similarities = model.similarity(query_embedding, paragraphs_embedding)
     score = similarities.max().item()
     top_paragraph_index = int(similarities.argmax().item())
