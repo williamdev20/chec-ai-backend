@@ -6,6 +6,7 @@ from app.services.agent_service import check_with_agent
 
 def check_poster(img):
     claim = getFinalClaim(img)
+    print(f"[DEBUG] Claim extraído: '{claim}'")
 
     google_check_result = google_fact_checking_claim(claim)
 
@@ -15,7 +16,15 @@ def check_poster(img):
 
         if not paragraphs:
             agent_result = check_with_agent(claim, "Nenhum parágrafo encontrado.").strip().upper()
-            return agent_result == "TRUE"
+            print(f"[AGENT] Resposta: '{agent_result}'")
+            
+            if "FALSE" in agent_result:
+                return False
+            elif "TRUE" in agent_result:
+                return True
+            else:
+                print(f"[AGENT] Resposta inesperada, assumindo FALSE por segurança: '{agent_result}'")
+                return False
 
         paragraph_embedding = get_scrapping_paragraphs_embedding(paragraphs)
 
@@ -23,8 +32,21 @@ def check_poster(img):
 
         if isinstance(cosine_similarity_result, dict):
             agent_result = check_with_agent(claim, cosine_similarity_result["paragraph"]).strip().upper()
-            return agent_result == "TRUE"
+            print(f"[AGENT] Resposta: '{agent_result}'")
+            
+            if "FALSE" in agent_result:
+                return False
+            elif "TRUE" in agent_result:
+                return True
+            else:
+                print(f"[AGENT] Resposta inesperada, assumindo FALSE por segurança: '{agent_result}'")
+                return False
         else:
             return cosine_similarity_result
     else:
         return google_check_result
+
+"""
+teu if ta errado ou verificação da resposta ta errado.
+ O Groq retornou False e a extensão mostrou que não tinha 
+"""

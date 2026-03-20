@@ -13,6 +13,9 @@ jobs = {}
 @router.post("/start-check")
 async def start_check(img: UploadFile = File(...)):
     img_bytes = await img.read()
+    print(f"[DEBUG] Tamanho recebido: {len(img_bytes)} bytes")
+    print(f"[DEBUG] Content-type: {img.content_type}")
+    print(f"[DEBUG] Filename: {img.filename}")
 
     if len(img_bytes) > 50 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="Tamanho da imagem é maior que 50MB")
