@@ -3,6 +3,7 @@
 ### Versão das tecnologias utilizadas:
 
 **Python: v3.10.19**
+
 **uv: v0.9.15**
 
 Clone o repositório
